@@ -11,7 +11,8 @@
   --strong: #e9ecf4;
   --text: #cdd2df;
   --muted: #9aa2b8;
-  --subtle: #767f97;
+  /* The app's Hint tone is for 11-point UI text; small web captions need 4.5:1. */
+  --subtle: #8a92a8;
   --mint: #70d689;
   --blue: #74cde2;
   --violet: #ec8ac7;
@@ -38,7 +39,7 @@
     --strong: #16181c;
     --text: #2b2e33;
     --muted: #5d636e;
-    --subtle: #737985;
+    --subtle: #5c616b;
     --mint: #1d7a5a;
     --blue: #2f62b8;
     --violet: #6f4fc2;
