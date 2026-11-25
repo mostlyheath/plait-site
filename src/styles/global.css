@@ -1,0 +1,194 @@
+/* Colours follow the app's own tokens (DESIGN.md, "Tokens"): Stillwater Deep
+   for dark, the built-in light palette for light. */
+:root {
+  color-scheme: dark light;
+  --rail: #11131b;
+  --bg: #171a24;
+  --panel: #1f2330;
+  --raised: #272c3b;
+  --border: #252a38;
+  --edge: #363d52;
+  --strong: #e9ecf4;
+  --text: #cdd2df;
+  --muted: #9aa2b8;
+  --subtle: #767f97;
+  --mint: #70d689;
+  --blue: #74cde2;
+  --violet: #ec8ac7;
+  --amber: #eec96e;
+  --braid-1: #85eecb;
+  --braid-2: #39d0ef;
+  --braid-3: #8a55ff;
+  --braid-gap: var(--rail);
+  --shadow: 0 30px 80px -30px rgb(0 0 0 / 0.7), 0 2px 8px rgb(0 0 0 / 0.4);
+  --sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --measure: 68ch;
+  --page: 1160px;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --rail: #efefec;
+    --bg: #f7f7f5;
+    --panel: #ffffff;
+    --raised: #ffffff;
+    --border: #e3e3df;
+    --edge: #d3d4cf;
+    --strong: #16181c;
+    --text: #2b2e33;
+    --muted: #5d636e;
+    --subtle: #737985;
+    --mint: #1d7a5a;
+    --blue: #2f62b8;
+    --violet: #6f4fc2;
+    --amber: #8a5f0a;
+    --braid-1: #3fb894;
+    --braid-2: #1d9ec0;
+    --braid-3: #7a45ef;
+    --shadow: 0 30px 70px -30px rgb(30 34 50 / 0.35), 0 2px 8px rgb(30 34 50 / 0.12);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--rail);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3 {
+  color: var(--strong);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+  margin: 0;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--blue);
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+code,
+pre {
+  font-family: var(--mono);
+  font-size: 0.86em;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.wrap {
+  width: min(100% - 2.5rem, var(--page));
+  margin-inline: auto;
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--subtle);
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  padding: 0.72em 1.15em;
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 0.97rem;
+  line-height: 1.2;
+  text-decoration: none;
+  border: 1px solid var(--edge);
+  color: var(--strong);
+  background: var(--raised);
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+}
+
+.button:hover {
+  border-color: var(--muted);
+}
+
+.button.primary {
+  background: var(--strong);
+  color: var(--rail);
+  border-color: var(--strong);
+}
+
+.button.primary:hover {
+  background: var(--text);
+}
+
+.button svg {
+  width: 1.05em;
+  height: 1.05em;
+  flex: none;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.skip {
+  position: absolute;
+  left: 1rem;
+  top: -3rem;
+  background: var(--strong);
+  color: var(--rail);
+  padding: 0.5rem 0.8rem;
+  border-radius: 8px;
+  z-index: 10;
+}
+
+.skip:focus {
+  top: 1rem;
+}

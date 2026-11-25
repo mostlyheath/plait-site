@@ -1,0 +1,724 @@
+---
+import { Picture, getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Braid from '../components/Braid.astro';
+import Window from '../components/Window.astro';
+import mark from '../assets/mark.svg';
+import hero from '../assets/screens/hero.png';
+import heroLight from '../assets/screens/hero-light.png';
+import changes from '../assets/screens/changes.png';
+import approval from '../assets/screens/approval.png';
+import worktrees from '../assets/screens/worktrees.png';
+import machines from '../assets/screens/machines.png';
+
+// The hero follows the visitor's colour scheme: one <picture> with light
+// sources first (matched by media query), then the dark default.
+const heroSizes = '(min-width: 1200px) 1160px, 100vw';
+const heroWidths = [800, 1400, 2000];
+async function srcset(src: ImageMetadata, format: 'avif' | 'webp') {
+  const images = await Promise.all(
+    heroWidths.filter((w) => w <= src.width).map((width) => getImage({ src, width, format })),
+  );
+  return images.map((img) => `${img.src} ${img.attributes.width}w`).join(', ');
+}
+const light = '(prefers-color-scheme: light)';
+const heroSources = [
+  { type: 'image/avif', media: light, srcset: await srcset(heroLight, 'avif') },
+  { type: 'image/webp', media: light, srcset: await srcset(heroLight, 'webp') },
+  { type: 'image/avif', media: undefined, srcset: await srcset(hero, 'avif') },
+  { type: 'image/webp', media: undefined, srcset: await srcset(hero, 'webp') },
+];
+const heroFallback = await getImage({ src: hero, width: 1400, format: 'webp' });
+
+const repo = 'https://github.com/mostlyheath/plait';
+const releases = `${repo}/releases`;
+const doc = (path: string) => `${repo}/blob/main/${path}`;
+
+const features = [
+  {
+    title: 'Work that outlives the window',
+    body: 'The host owns each run, its history and its approvals. Quit, update or lose the connection; reopen and everything is where you left it.',
+  },
+  {
+    title: 'Approvals you can read',
+    body: 'Let the agent work, or approve each edit and command. On a Mac, a project can run commands in a sandbox that cannot write the checkout or reach the network.',
+  },
+  {
+    title: 'Undo a run',
+    body: 'The host records the checkout before and after every run. One press puts back what that run changed and leaves your own later edits alone.',
+  },
+  {
+    title: 'Git review, built in',
+    body: 'Stage and discard by file or hunk, commit, push, pull and switch branches. The host watches the checkout, so Changes stays current.',
+  },
+  {
+    title: 'Several threads, one project',
+    body: 'A busy project offers a worktree of its own or a place in line. The Worktrees tab shows every branch with its thread’s state and the space it holds.',
+  },
+  {
+    title: 'Keyboard first',
+    body: 'Tabs on Cmd-1 to Cmd-9, a command palette, quick open with Cmd-P, and shortcuts you can rebind.',
+  },
+];
+
+const harnesses = [
+  {
+    name: 'Pi',
+    tag: 'Built in',
+    body: 'Ships with the host. Uses Plait’s approval mode and per-project command policy, your AGENTS.md, skills and MCP servers.',
+  },
+  {
+    name: 'Codex',
+    tag: 'Your install',
+    body: 'Plait runs your own codex with its own sign-in, configuration and MCP servers, or installs the tested version for you.',
+  },
+  {
+    name: 'Claude Code',
+    tag: 'Your install',
+    body: 'Plait runs your own claude with its own sign-in. A one-time setup downloads Anthropic’s Agent SDK, pinned and checksummed.',
+  },
+];
+---
+<Base
+  title="Plait — a native Mac app for coding agents"
+  description="Start agent threads in your repositories, approve what they do, then review and commit the result, on this Mac or another machine. Native, open source, MIT."
+>
+  <header class="nav wrap">
+    <a class="brand" href="/" aria-label="Plait home">
+      <img src={mark.src} width="20" height="25" alt="" />
+      <span>Plait</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="#how">How it works</a>
+      <a href="#machines">Machines</a>
+      <a href={doc('docs/GUIDE.md')}>Guide</a>
+      <a href={repo}>GitHub</a>
+    </nav>
+    <a class="button small" href={releases}>Download</a>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="hero-braid" aria-hidden="true"><Braid width={1600} height={260} periods={4} /></div>
+      <div class="wrap hero-copy">
+        <p class="eyebrow">Preview · macOS 15 on Apple Silicon</p>
+        <h1>Threads that keep going when you close the window.</h1>
+        <p class="lede">
+          Plait is a native Mac app for coding agents. Start threads in your repositories,
+          approve what the agent does, then review and commit the result, on this Mac or on
+          another machine.
+        </p>
+        <div class="ctas">
+          <a class="button primary" href={releases}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.4 12.6c0-2.4 2-3.6 2.1-3.7-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.9-3.7.9-.8 0-1.9-.9-3.2-.8-1.6 0-3.1 1-4 2.4-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.1-.8 1.5 0 1.9.8 3.2.8 1.3 0 2.2-1.2 3-2.4.9-1.4 1.3-2.7 1.3-2.8 0 0-2.5-1-2.5-3.9zM14 5.5c.7-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.5-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.6 2.8-1.4z"/></svg>
+            Download for macOS
+          </a>
+          <a class="button" href={repo}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.6 18.3 5 18.3 5c.7 1.7.3 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5z"/></svg>
+            View on GitHub
+          </a>
+        </div>
+        <p class="fine">Free and open source under MIT. Previews are unsigned and not notarized; <a href={doc('docs/GUIDE.md#install-and-updates')}>read the install notes</a>.</p>
+      </div>
+      <div class="wrap hero-shot">
+        <Window>
+          <picture>
+            {heroSources.map((s) => <source type={s.type} media={s.media} srcset={s.srcset} sizes={heroSizes} />)}
+            <img
+              src={heroFallback.src}
+              width={hero.width}
+              height={hero.height}
+              alt="Plait with a finished thread that added retries to a sample Rust project: the request, the agent's plan, its file reads, edits and test run, and the threads of two projects in the sidebar"
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+            />
+          </picture>
+        </Window>
+        <p class="caption">Plait’s real views, drawn over a sample project. The thread shown is sample data, not a recorded agent run.</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="what">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">What you get</p>
+          <h2 id="what">An agent workspace that belongs to the machine with your code.</h2>
+        </div>
+        <ul class="features">
+          {features.map((f) => (
+            <li>
+              <h3>{f.title}</h3>
+              <p>{f.body}</p>
+            </li>
+          ))}
+        </ul>
+        <div class="pair">
+          <figure>
+            <Window compact>
+              <Picture src={changes} formats={['avif', 'webp']} fallbackFormat="webp" widths={[700, 1200]} sizes="(min-width: 900px) 560px, 100vw" alt="The Changes panel beside the thread: a staged diff of client.rs and the commit box" />
+            </Window>
+            <figcaption>Changes: stage by file or hunk, then commit.</figcaption>
+          </figure>
+          <figure>
+            <Window compact>
+              <Picture src={approval} formats={['avif', 'webp']} fallbackFormat="webp" widths={[700, 1200]} sizes="(min-width: 900px) 560px, 100vw" alt="A thread waiting for approval to run cargo test in the command sandbox" />
+            </Window>
+            <figcaption>An approval, in the message box’s place.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="harnesses-title">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Your agents</p>
+          <h2 id="harnesses-title">Bring the agent you already use.</h2>
+          <p class="sub">A thread runs in one harness, chosen when it starts. Sign in to a provider or add a key; the host keeps the credentials.</p>
+        </div>
+        <ul class="harnesses">
+          {harnesses.map((h) => (
+            <li>
+              <div class="harness-head">
+                <h3>{h.name}</h3>
+                <span class="tag">{h.tag}</span>
+              </div>
+              <p>{h.body}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="how" aria-labelledby="how-title">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">How it works</p>
+          <h2 id="how-title">Two parts: a host that does the work, an app that shows it.</h2>
+          <p class="sub">
+            The host runs on the machine that holds your code. It runs the agents and owns every
+            thread, project, worktree and undo record. The app is a fast native window onto a host.
+            It is written in Rust and drawn with GPUI. There is no web view.
+          </p>
+        </div>
+        <figure class="diagram" aria-label="The Plait app talks to a host over a local socket, SSH or Tailscale. The host runs the agent runtime and owns Git, worktrees and records for your repositories.">
+          <div class="node app">
+            <span class="node-kicker">This Mac</span>
+            <strong>Plait app</strong>
+            <span>Rust · GPUI</span>
+            <span>Tabs, review, approvals</span>
+          </div>
+          <div class="link">
+            <span>local socket</span>
+            <span>SSH</span>
+            <span>Tailscale</span>
+          </div>
+          <div class="node host">
+            <span class="node-kicker">Any Mac or Linux machine</span>
+            <strong>plait-host</strong>
+            <span>Threads, queues, approvals</span>
+            <span>Git, worktrees, undo records</span>
+            <div class="runtime">
+              <span class="node-kicker">Agent runtime</span>
+              <span class="chips"><span>Pi</span><span>Codex</span><span>Claude Code</span></span>
+            </div>
+          </div>
+          <div class="link short"><span>reads and writes</span></div>
+          <div class="node repo">
+            <span class="node-kicker">Your code</span>
+            <strong>Repositories</strong>
+            <span>and their worktrees</span>
+          </div>
+        </figure>
+        <p class="note">
+          Closing the window, or losing the connection, never stops accepted work. Read the{' '}
+          <a href={doc('docs/ARCHITECTURE.md')}>architecture</a> and the{' '}
+          <a href={doc('docs/HOST.md')}>host contract</a> for the details.
+        </p>
+      </div>
+    </section>
+
+    <section class="section" id="machines" aria-labelledby="machines-title">
+      <div class="wrap split">
+        <div class="split-copy">
+          <p class="eyebrow">Machines</p>
+          <h2 id="machines-title">Any machine, the same app.</h2>
+          <p>
+            Run a host on a Linux box or another Mac and reach it over SSH, or over Tailscale if
+            you opt in. The Mac installs and updates a Linux host over the same SSH connection.
+          </p>
+          <p>
+            Each machine keeps its own projects and your tabs on it. The control at the bottom of
+            the sidebar shows the current machine and switches between them.
+          </p>
+          <p class="planned"><span class="tag">Planned</span> Several machines in one sidebar, with a project’s copies grouped across them.</p>
+        </div>
+        <Window compact>
+          <Picture src={machines} formats={['avif', 'webp']} fallbackFormat="webp" widths={[700, 1200]} sizes="(min-width: 900px) 600px, 100vw" alt="Settings, Machines: the host on this Mac and a workstation reached over SSH, with Use, Remove and Add machine" />
+        </Window>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="worktrees-title">
+      <div class="wrap split reverse">
+        <div class="split-copy">
+          <p class="eyebrow">Worktrees</p>
+          <h2 id="worktrees-title">Parallel threads without stepping on each other.</h2>
+          <p>
+            Start a thread with a worktree of its own, or queue it behind the running one. Plait
+            creates and removes the worktree for you and shows what each branch holds.
+          </p>
+        </div>
+        <Window compact>
+          <Picture src={worktrees} formats={['avif', 'webp']} fallbackFormat="webp" widths={[700, 1200]} sizes="(min-width: 900px) 600px, 100vw" alt="The Worktrees view: a graph of branches with each thread's state, commits and storage size" />
+        </Window>
+      </div>
+    </section>
+
+    <section class="section status" aria-labelledby="status-title">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Status</p>
+          <h2 id="status-title">An early preview, built in the open.</h2>
+        </div>
+        <div class="status-grid">
+          <div>
+            <h3>Install</h3>
+            <p>Apple Silicon, macOS 15 or later, Git, and an account with a model provider. Download the DMG from <a href={releases}>Releases</a>, or from Terminal:</p>
+            <pre><code>curl --proto '=https' -fsSL \
+  https://raw.githubusercontent.com/mostlyheath/plait/main/scripts/install.sh |
+  bash -s -- --allow-unsigned</code></pre>
+            <p class="fine">Previews are unsigned and not notarized. Don’t disable Gatekeeper; follow the <a href={doc('docs/GUIDE.md#install-and-updates')}>install notes</a>. Updates are checked against signed manifests.</p>
+          </div>
+          <div>
+            <h3>What it is not</h3>
+            <p>Plait is not an IDE: no editor, embedded terminal, merge or rebase. Files are read-only, and Open in Editor or Terminal uses the commands you choose.</p>
+            <h3>What’s verified</h3>
+            <p>Each piece of behaviour, and what has not been checked yet, is listed in <a href={doc('docs/VERIFICATION.md')}>Verification</a>. What comes next is in the <a href={doc('docs/ROADMAP.md')}>roadmap</a>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-braid" aria-hidden="true"><Braid width={1600} height={90} periods={7} /></div>
+    <div class="wrap footer-row">
+      <a class="brand" href="/" aria-label="Plait home">
+        <img src={mark.src} width="18" height="22" alt="" />
+        <span>Plait</span>
+      </a>
+      <nav aria-label="Footer">
+        <a href={repo}>GitHub</a>
+        <a href={releases}>Releases</a>
+        <a href={doc('docs/GUIDE.md')}>Guide</a>
+        <a href={doc('docs/README.md')}>Docs</a>
+        <a href={doc('docs/ROADMAP.md')}>Roadmap</a>
+        <a href={doc('CONTRIBUTING.md')}>Contribute</a>
+      </nav>
+      <p class="fine">MIT licensed. © 2026 Heath Blandford.</p>
+    </div>
+  </footer>
+</Base>
+
+<style>
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding-block: 1.1rem;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    color: var(--strong);
+    font-weight: 600;
+    font-size: 1.08rem;
+    text-decoration: none;
+  }
+  .nav nav {
+    display: flex;
+    gap: 1.4rem;
+    margin-left: auto;
+  }
+  .nav nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.95rem;
+  }
+  .nav nav a:hover {
+    color: var(--strong);
+  }
+  .button.small {
+    padding: 0.5em 0.9em;
+    font-size: 0.9rem;
+  }
+
+  .hero {
+    position: relative;
+    padding-top: clamp(2.5rem, 6vw, 4.75rem);
+    overflow: hidden;
+  }
+  .hero-braid {
+    position: absolute;
+    inset: 9rem -5% auto;
+    opacity: 0.22;
+    pointer-events: none;
+    mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent);
+  }
+  .hero-copy {
+    position: relative;
+    text-align: center;
+    display: grid;
+    justify-items: center;
+    gap: 1.25rem;
+  }
+  h1 {
+    font-size: clamp(2.3rem, 5.6vw, 4.1rem);
+    max-width: 21ch;
+  }
+  .lede {
+    font-size: clamp(1.05rem, 1.6vw, 1.22rem);
+    color: var(--muted);
+    max-width: 56ch;
+  }
+  .ctas {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 0.4rem;
+  }
+  .fine {
+    font-size: 0.85rem;
+    color: var(--subtle);
+  }
+  .fine a {
+    color: inherit;
+  }
+  .hero-shot {
+    position: relative;
+    margin-top: clamp(2.5rem, 6vw, 4.5rem);
+  }
+  .caption {
+    margin-top: 0.9rem;
+    text-align: center;
+    font-size: 0.82rem;
+    color: var(--subtle);
+  }
+
+  .section {
+    padding-block: clamp(4rem, 9vw, 7rem);
+    border-top: 1px solid var(--border);
+  }
+  .hero + .section {
+    border-top: 0;
+  }
+  .section-head {
+    display: grid;
+    gap: 0.9rem;
+    max-width: 46rem;
+    margin-bottom: clamp(2rem, 5vw, 3.25rem);
+  }
+  h2 {
+    font-size: clamp(1.75rem, 3.4vw, 2.6rem);
+  }
+  h3 {
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
+  }
+  .sub {
+    color: var(--muted);
+    max-width: var(--measure);
+  }
+
+  .features {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 2.2rem 2.5rem;
+  }
+  .features li {
+    display: grid;
+    gap: 0.45rem;
+    padding-left: 1rem;
+    border-left: 2px solid var(--edge);
+  }
+  .features li:nth-child(3n + 1) { border-color: var(--braid-1); }
+  .features li:nth-child(3n + 2) { border-color: var(--braid-2); }
+  .features li:nth-child(3n + 3) { border-color: var(--braid-3); }
+  .features p {
+    color: var(--muted);
+    font-size: 0.96rem;
+  }
+
+  .pair {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+    gap: 1.75rem;
+    margin-top: clamp(3rem, 6vw, 4.5rem);
+  }
+  figure {
+    margin: 0;
+  }
+  figcaption {
+    margin-top: 0.75rem;
+    font-size: 0.88rem;
+    color: var(--subtle);
+  }
+
+  .harnesses {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: 1.25rem;
+  }
+  .harnesses li {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.4rem 1.4rem 1.5rem;
+    display: grid;
+    gap: 0.6rem;
+    align-content: start;
+  }
+  .harness-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .harness-head h3 {
+    font-size: 1.2rem;
+  }
+  .harnesses p {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  .tag {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    padding: 0.2em 0.6em;
+    border-radius: 999px;
+    border: 1px solid var(--edge);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .diagram {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.35fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 0;
+  }
+  .node {
+    display: grid;
+    gap: 0.25rem;
+    padding: 1.3rem 1.35rem;
+    border-radius: 14px;
+    background: var(--bg);
+    border: 1px solid var(--edge);
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .node strong {
+    color: var(--strong);
+    font-size: 1.12rem;
+    font-weight: 600;
+  }
+  .node-kicker {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--subtle);
+  }
+  .node.app { border-top: 2px solid var(--braid-2); }
+  .node.host { border-top: 2px solid var(--braid-3); }
+  .node.repo { border-top: 2px solid var(--braid-1); }
+  .runtime {
+    margin-top: 0.7rem;
+    padding: 0.8rem 0.9rem;
+    border-radius: 10px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    display: grid;
+    gap: 0.45rem;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .chips span {
+    font-size: 0.8rem;
+    padding: 0.15em 0.6em;
+    border-radius: 6px;
+    background: var(--raised);
+    border: 1px solid var(--edge);
+    color: var(--text);
+  }
+  .link {
+    display: grid;
+    justify-items: center;
+    gap: 0.15rem;
+    padding-inline: 0.9rem;
+    min-width: 7.5rem;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--subtle);
+    position: relative;
+  }
+  .link::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    border-top: 1px dashed var(--edge);
+    z-index: -1;
+  }
+  .link span {
+    background: var(--rail);
+    padding-inline: 0.35rem;
+  }
+  .link.short {
+    min-width: 6rem;
+  }
+  .note {
+    margin-top: 2rem;
+    color: var(--muted);
+    max-width: var(--measure);
+  }
+
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: center;
+  }
+  .split.reverse .split-copy {
+    order: 2;
+  }
+  .split-copy {
+    display: grid;
+    gap: 1rem;
+  }
+  .split-copy p {
+    color: var(--muted);
+  }
+  .planned {
+    display: flex;
+    gap: 0.6rem;
+    align-items: baseline;
+    font-size: 0.93rem;
+  }
+
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
+    gap: 2.5rem 3.5rem;
+  }
+  .status-grid > div {
+    display: grid;
+    gap: 0.9rem;
+    align-content: start;
+  }
+  .status-grid h3:not(:first-child) {
+    margin-top: 0.8rem;
+  }
+  .status-grid p {
+    color: var(--muted);
+  }
+  pre {
+    margin: 0;
+    padding: 1rem 1.1rem;
+    border-radius: 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    overflow-x: auto;
+    line-height: 1.55;
+  }
+
+  .footer {
+    position: relative;
+    border-top: 1px solid var(--border);
+    padding-block: 3rem 3.5rem;
+    overflow: hidden;
+  }
+  .footer-braid {
+    opacity: 0.35;
+    margin-bottom: 2.2rem;
+    mask-image: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent);
+  }
+  .footer-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.2rem 2rem;
+  }
+  .footer-row nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.3rem;
+  }
+  .footer-row nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.92rem;
+  }
+  .footer-row nav a:hover {
+    color: var(--strong);
+  }
+  .footer-row .fine {
+    margin-left: auto;
+  }
+
+  @media (max-width: 900px) {
+    .diagram {
+      grid-template-columns: 1fr;
+      justify-items: stretch;
+    }
+    .link {
+      padding-block: 0.8rem;
+      min-width: 0;
+    }
+    .link::before {
+      left: 50%;
+      right: auto;
+      top: 0;
+      bottom: 0;
+      border-top: 0;
+      border-left: 1px dashed var(--edge);
+    }
+    .split {
+      grid-template-columns: 1fr;
+    }
+    .split.reverse .split-copy {
+      order: 0;
+    }
+    .footer-row .fine {
+      margin-left: 0;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .nav nav {
+      display: none;
+    }
+    .nav .button.small {
+      margin-left: auto;
+    }
+    body {
+      font-size: 16px;
+    }
+  }
+</style>

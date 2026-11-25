@@ -1,0 +1,30 @@
+---
+// A quiet frame around a real screenshot: a hairline, rounded corners and a
+// soft shadow, so the app's own chrome stays the thing you look at.
+interface Props {
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
+---
+<div class:list={['window', { compact }]}>
+  <slot />
+</div>
+
+<style>
+  .window {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--edge);
+    background: var(--bg);
+    box-shadow: var(--shadow);
+    line-height: 0;
+  }
+  .window.compact {
+    border-radius: 11px;
+  }
+  .window :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+</style>

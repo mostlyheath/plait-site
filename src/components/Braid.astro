@@ -1,0 +1,73 @@
+---
+// A three-strand plait drawn as a projected helix. Each strand is split where
+// it passes from behind to in front, so the back halves are drawn first and
+// the front halves over them: every crossing reads as over-and-under.
+interface Props {
+  width?: number;
+  height?: number;
+  periods?: number;
+  class?: string;
+  label?: string;
+}
+const { width = 1200, height = 120, periods = 5, class: className, label } = Astro.props;
+
+const strands = ['var(--braid-1)', 'var(--braid-2)', 'var(--braid-3)'];
+const mid = height / 2;
+const amp = height * 0.32;
+const step = (Math.PI * 2 * periods) / width;
+const samples = 12; // points per half-period piece
+
+type Piece = { d: string; color: string; front: boolean };
+const pieces: Piece[] = [];
+strands.forEach((color, i) => {
+  const phase = (i * 2 * Math.PI) / 3;
+  // z = cos(t + phase) changes sign every half-period, at t + phase = π/2 + kπ.
+  const total = width * step;
+  let start = -phase + Math.PI / 2;
+  while (start > 0) start -= Math.PI;
+  for (let a = start; a < total; a += Math.PI) {
+    const b = Math.min(a + Math.PI, total);
+    const from = Math.max(a, 0);
+    if (b <= from) continue;
+    const mid_t = (from + b) / 2;
+    const front = Math.cos(mid_t + phase) > 0;
+    const pts: string[] = [];
+    for (let s = 0; s <= samples; s++) {
+      const t = from + ((b - from) * s) / samples;
+      const x = t / step;
+      const y = mid + amp * Math.sin(t + phase);
+      pts.push(`${x.toFixed(1)},${y.toFixed(1)}`);
+    }
+    pieces.push({ d: `M${pts.join('L')}`, color, front });
+  }
+});
+const back = pieces.filter((p) => !p.front);
+const front = pieces.filter((p) => p.front);
+---
+<svg
+  class:list={['braid', className]}
+  viewBox={`0 0 ${width} ${height}`}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+  focusable="false"
+>
+  <g fill="none" stroke-linecap="round" stroke-width="3">
+    {back.map((p) => <path d={p.d} stroke={p.color} opacity="0.45" />)}
+    {front.map((p) => (
+      <>
+        <path d={p.d} stroke="var(--braid-gap)" stroke-width="9" />
+        <path d={p.d} stroke={p.color} />
+      </>
+    ))}
+  </g>
+</svg>
+
+<style>
+  .braid {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+</style>
