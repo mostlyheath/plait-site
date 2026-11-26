@@ -37,7 +37,7 @@ const doc = (path: string) => `${repo}/blob/main/${path}`;
 const features = [
   {
     title: 'Work that outlives the window',
-    body: 'The host owns each run, its history and its approvals. Quit, update or lose the connection; reopen and everything is where you left it.',
+    body: 'Quit the app or lose the connection and accepted runs keep going. If the host itself restarts, everything saved is kept, and a running turn ends as Interrupted instead of being replayed.',
   },
   {
     title: 'Approvals you can read',
@@ -48,16 +48,16 @@ const features = [
     body: 'The host records the files a run changes. One press puts them back and leaves your own later edits alone. Untracked files inside Git-ignored folders are not recorded.',
   },
   {
-    title: 'Git review, built in',
-    body: 'Stage and discard by file or hunk, commit, push, pull and switch branches. The host watches the checkout, so Changes stays current.',
+    title: 'Git review and rendered docs',
+    body: 'Stage and discard by file or hunk, commit, push, pull and switch branches. Markdown files open rendered in Files and Changes, with a Source switch, heading outline, Find, images from the checkout and a check for broken local links.',
   },
   {
     title: 'Linear, in a tab',
     body: 'Browse a project’s Linear issues, start a thread from one, and create or edit issues without leaving the app. Your Linear key stays on the host.',
   },
   {
-    title: 'Keyboard first',
-    body: 'Tabs on Cmd-1 to Cmd-9, a command palette, quick open with Cmd-P, and shortcuts you can rebind.',
+    title: 'Keyboard and themes',
+    body: 'Tabs on Cmd-1 to Cmd-9, a command palette, quick open with Cmd-P and shortcuts you can rebind. Includes Stillwater, Stillwater Deep and Stillwater Light alongside Plait’s own and Base16 themes.',
   },
 ];
 
@@ -118,7 +118,7 @@ const harnesses = [
             View on GitHub
           </a>
         </div>
-        <p class="fine">Free and open source under MIT. Previews are unsigned and not notarized; <a href={doc('docs/GUIDE.md#install-and-updates')}>read the install notes</a>.</p>
+        <p class="fine">Free and open source under MIT. Plait is ad-hoc signed and not notarized (Developer ID signing is not planned); first open needs System Settings → Privacy &amp; Security → Open Anyway, once. <a href={doc('docs/GUIDE.md#install-and-updates')}>Install notes</a>.</p>
       </div>
       <div class="wrap hero-shot">
         <Window>
@@ -232,7 +232,9 @@ const harnesses = [
           </div>
         </figure>
         <p class="note">
-          Closing the window, or losing the connection, never stops accepted work. Read the{' '}
+          Closing the window, or losing the connection, never stops accepted work, and updates wait
+          until nothing is running. If the host restarts, every saved thread, draft, queue and Undo
+          record is kept, while a running turn ends as Interrupted and is never replayed. Read the{' '}
           <a href={doc('docs/ARCHITECTURE.md')}>architecture</a> and the{' '}
           <a href={doc('docs/HOST.md')}>host contract</a> for the details.
         </p>
@@ -249,8 +251,8 @@ const harnesses = [
             you opt in. The Mac installs and updates a Linux host over the same SSH connection.
           </p>
           <p>
-            Each machine keeps its own projects and your tabs on it. The control at the bottom of
-            the sidebar shows the current machine and switches between them.
+            Each machine keeps its own projects, tabs and unsent drafts. The control at the bottom
+            of the sidebar shows the current machine and switches between them.
           </p>
           <p class="planned"><span class="tag">Planned</span> Several machines in one sidebar, with a project’s copies grouped across them.</p>
         </div>
@@ -285,11 +287,11 @@ const harnesses = [
         <div class="status-grid">
           <div>
             <h3>Install</h3>
-            <p>Apple Silicon, macOS 15 or later, Git, and an account with a model provider. Download the DMG from <a href={releases}>Releases</a>, or from Terminal:</p>
+            <p>Apple Silicon, macOS 15 or later, Git, and an account with a model provider. Download the DMG from <a href={releases}>Releases</a> and drag Plait into Applications (the DMG holds only Plait and an Applications shortcut), or install from Terminal:</p>
             <pre><code>curl --proto '=https' -fsSL \
   https://raw.githubusercontent.com/mostlyheath/plait/main/scripts/install.sh |
   bash -s -- --allow-unsigned</code></pre>
-            <p class="fine">Previews are unsigned and not notarized. Don’t disable Gatekeeper; follow the <a href={doc('docs/GUIDE.md#install-and-updates')}>install notes</a>. Updates are checked against signed manifests.</p>
+            <p class="fine">Plait is ad-hoc signed and not notarized; Developer ID signing is not planned. The first open needs System Settings → Privacy &amp; Security → Open Anyway, once. Do not disable Gatekeeper; read the <a href={doc('docs/GUIDE.md#install-and-updates')}>install notes</a>. Updates are checked against signed manifests and wait until nothing is running.</p>
           </div>
           <div>
             <h3>What it is not</h3>
